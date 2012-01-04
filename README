@@ -1,0 +1,5 @@
+DeCast.pl
+---------
+Decoder for CAST encoded SQL attacks.  Accepts the payload as either STDIN or a file argument, outputs decoded CAST (following multiple levels recursively) including whois and dig output.
+
+This is useful for quickly analyzing payloads of many of the mass SQL injection attacks, including Asprox, Lizamoon, and Lilupophilupop.  
