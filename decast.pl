@@ -33,7 +33,7 @@ sub hex_to_ascii ($)
 sub decast ($)
    {
 	my ($in) = @_;
-	if ( $in =~ /Cast.+?(\(|%28)0X(.*)as/i){
+	if ( $in =~ /Cast(\(|%28)0X(.*)as/i){
  	## extract the CAST hex, and return ascii.
 		 	my $cast_hex = $2; 
 		my $decode = hex_to_ascii($cast_hex);
@@ -73,3 +73,5 @@ if (!$input) {
   $input = <STDIN>;
   print "\n";
 }
+
+decast($input);

